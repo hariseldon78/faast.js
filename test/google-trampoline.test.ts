@@ -21,11 +21,12 @@ import {
     makeTrampoline as makeTrampolineQueue
 } from "../src/google/google-trampoline-queue";
 import { filterMessages, Kind } from "../src/provider";
-import { serialize, serializeFunctionArgs } from "../src/serialize";
+import { serializeFunctionArgs } from "../src/serialize";
 import { Wrapper } from "../src/wrapper";
 import * as funcs from "./fixtures/functions";
 import { checkIteratorMessages, expectMessage, title } from "./fixtures/util";
 import { sleep } from "../src/shared";
+import { serialize } from "../src/loader";
 
 process.env.FAAST_SILENT = "true";
 

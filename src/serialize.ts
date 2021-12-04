@@ -1,45 +1,12 @@
 import { deepStrictEqual } from "assert";
 import { FaastError, FaastErrorNames } from "./error";
 import { inspect } from "util";
-
-// Deep copy undefined and symbol keys from source to dest. Mainly used to see
-// if the source and dest are deep equal once these differences are factored
-// out.
-export function deepCopyUndefined(dest: object, source: object) {
-    const stack: object[] = [];
-    function isBackReference(o: object) {
-        for (const elem of stack) {
-            if (elem === o) {
-                return true;
-            }
-        }
-        return false;
-    }
-    function recurse(d: any, s: any) {
-        if (isBackReference(s) || d === undefined) {
-            return;
-        }
-        stack.push(s);
-        Object.keys(s).forEach(key => {
-            if (s[key] && typeof s[key] === "object") {
-                recurse(d[key], s[key]);
-            } else if (s[key] === undefined) {
-                d[key] = undefined;
-            } else if (typeof s[key] === "symbol") {
-                d[key] = s[key];
-            }
-        });
-        Object.getOwnPropertySymbols(s).forEach(key => {
-            d[key] = s[key];
-        });
-        stack.pop();
-    }
-    typeof source === "object" && recurse(dest, source);
-}
+import { deepCopyUndefined } from "./wrapper";
+import { serialize } from "./loader";
 
 const FJS_TYPE = "[faastjs type]";
 
-function replacer(this: any, key: any, value: any) {
+export function replacer(this: any, key: any, value: any) {
     const orig = this[key];
     const type = Object.prototype.toString.call(orig).slice(8, -1);
     if (typeof orig === "object" && orig instanceof Buffer) {
@@ -83,16 +50,6 @@ function replacer(this: any, key: any, value: any) {
         default:
             return value;
     }
-}
-
-export function serialize(arg: any, validate: boolean = false) {
-    const str = JSON.stringify(arg, replacer);
-    if (validate) {
-        const deserialized = deserialize(str);
-        deepCopyUndefined(deserialized, arg);
-        deepStrictEqual(deserialized, arg);
-    }
-    return str;
 }
 
 function reviver(this: any, _: any, value: any) {

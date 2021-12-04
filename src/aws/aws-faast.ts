@@ -16,7 +16,7 @@ import { readFile } from "fs-extra";
 import * as https from "https";
 import { inspect } from "util";
 import merge from "webpack-merge";
-import { caches } from "../cache";
+import { caches } from "../log";
 import { CostMetric, CostSnapshot } from "../cost";
 import { FaastError, FaastErrorNames } from "../error";
 import { faastAws } from "../faast";
@@ -31,7 +31,7 @@ import {
     ProviderImpl,
     UUID
 } from "../provider";
-import { serialize } from "../serialize";
+import { serialize } from "../loader";
 import {
     computeHttpResponseBytes,
     defined,

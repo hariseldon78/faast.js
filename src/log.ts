@@ -1,5 +1,6 @@
 import * as debug from "debug";
 import { inspect } from "util";
+import { PersistentCache } from "./cache";
 
 /**
  * Faast.js loggers.
@@ -73,3 +74,20 @@ export function inspectProvider(o: object) {
 
 log.warn.enabled = true;
 log.leaks.enabled = true;
+/////////////////////////////////////////////////////////////////
+// MISPLACED STUFF
+export const days = 24 * 3600 * 1000;
+export const caches = {
+    awsPrices: new PersistentCache(".faastjs/aws/pricing", 1 * days),
+    googlePrices: new PersistentCache(".faastjs/google/pricing", 1 * days),
+    awsGc: new PersistentCache(".faastjs/aws/gc", 7 * days)
+};
+
+export interface GoogleResources {
+    trampoline: string;
+    requestQueueTopic?: string;
+    requestSubscription?: string;
+    responseQueueTopic?: string;
+    responseSubscription?: string;
+    region: string;
+}

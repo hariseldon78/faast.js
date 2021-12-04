@@ -16,7 +16,7 @@ import { FaastError } from "./error";
 import { LoaderOptions } from "./loader";
 import { log } from "./log";
 import { commonDefaults, CommonOptions, IncludeOption } from "./provider";
-import { keysOf, streamToBuffer } from "./shared";
+import { keysOf, SmallestN, Statistics, streamToBuffer } from "./shared";
 import { TrampolineFactory, WrapperOptionDefaults, WrapperOptions } from "./wrapper";
 import { merge } from "webpack-merge";
 
@@ -34,6 +34,12 @@ function getUrlEncodedQueryParameters(options: LoaderOptions) {
         .filter(key => options[key])
         .map(key => `${key}=${encodeURIComponent(JSON.stringify(options[key]))}`)
         .join(`&`);
+}
+export class FunctionCpuUsage {
+    utime = new Statistics();
+    stime = new Statistics();
+    cpuTime = new Statistics();
+    smallest = new SmallestN(100);
 }
 
 export async function packer(

@@ -1,21 +1,7 @@
+import { FactoryMap } from "./google/google-faast";
 import { FunctionStats } from "./provider";
 import { SmallestN, Statistics } from "./shared";
 import { PropertiesOfType } from "./types";
-
-export class FactoryMap<K = string, V = {}> extends Map<K, V> {
-    constructor(readonly factory: (key: K) => V) {
-        super();
-    }
-
-    getOrCreate(key: K) {
-        let val = this.get(key);
-        if (!val) {
-            val = this.factory(key);
-            this.set(key, val);
-        }
-        return val;
-    }
-}
 
 export class FunctionStatsMap {
     fIncremental = new FactoryMap(() => new FunctionStats());
@@ -50,13 +36,6 @@ export class FunctionStatsMap {
         this.fIncremental.clear();
         this.fAggregate.clear();
     }
-}
-
-export class FunctionCpuUsage {
-    utime = new Statistics();
-    stime = new Statistics();
-    cpuTime = new Statistics();
-    smallest = new SmallestN(100);
 }
 
 class FunctionMemoryStats {

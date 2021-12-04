@@ -1,9 +1,10 @@
 import { SNSEvent } from "aws-lambda";
 import { SNS, SQS } from "aws-sdk";
 import { FaastError, FaastErrorNames } from "../error";
+import { serialize } from "../loader";
 import { log } from "../log";
 import { Message, PollResult } from "../provider";
-import { deserialize, serialize } from "../serialize";
+import { deserialize } from "../serialize";
 import { computeHttpResponseBytes, defined, sum } from "../shared";
 import { retryOp } from "../throttle";
 import { createErrorResponse, FunctionCall } from "../wrapper";

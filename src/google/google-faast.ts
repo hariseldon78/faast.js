@@ -9,7 +9,7 @@ import {
 } from "googleapis";
 import * as https from "https";
 import * as util from "util";
-import { caches } from "../cache";
+import { caches, GoogleResources } from "../log";
 import { CostMetric, CostSnapshot } from "../cost";
 import { FaastError, FaastErrorNames } from "../error";
 import { log } from "../log";
@@ -23,7 +23,6 @@ import {
     ProviderImpl,
     UUID
 } from "../provider";
-import { serialize } from "../serialize";
 import {
     computeHttpResponseBytes,
     hasExpired,
@@ -41,6 +40,7 @@ import * as googleTrampolineQueue from "./google-trampoline-queue";
 import CloudFunctions = cloudfunctions_v1;
 import PubSubApi = pubsub_v1;
 import CloudBilling = cloudbilling_v1;
+import { serialize } from "../loader";
 
 const gaxios = new Gaxios({
     retryConfig: {
@@ -117,13 +117,19 @@ export interface GoogleOptions extends CommonOptions {
     _gcWorker?: (resources: GoogleResources, services: GoogleServices) => Promise<void>;
 }
 
-export interface GoogleResources {
-    trampoline: string;
-    requestQueueTopic?: string;
-    requestSubscription?: string;
-    responseQueueTopic?: string;
-    responseSubscription?: string;
-    region: string;
+export class FactoryMap<K = string, V = {}> extends Map<K, V> {
+    constructor(readonly factory: (key: K) => V) {
+        super();
+    }
+
+    getOrCreate(key: K) {
+        let val = this.get(key);
+        if (!val) {
+            val = this.factory(key);
+            this.set(key, val);
+        }
+        return val;
+    }
 }
 
 export interface GoogleCloudPricing {

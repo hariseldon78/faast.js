@@ -11,10 +11,11 @@ import * as ora from "ora";
 import { tmpdir } from "os";
 import * as path from "path";
 import * as awsFaast from "./aws/aws-faast";
-import { caches, PersistentCache } from "./cache";
+import { PersistentCache } from "./cache";
 import * as googleFaast from "./google/google-faast";
 import { keysOf, uuidv4Pattern } from "./shared";
 import { throttle } from "./throttle";
+import { caches } from './log';
 
 const warn = console.warn;
 const log = console.log;

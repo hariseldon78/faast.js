@@ -1,7 +1,8 @@
 import { AbortController } from "abort-controller";
 import { pubsub_v1 } from "googleapis";
+import { serialize } from "../loader";
 import { Message, PollResult } from "../provider";
-import { deserialize, serialize } from "../serialize";
+import { deserialize } from "../serialize";
 import { computeHttpResponseBytes, defined } from "../shared";
 import { retryOp } from "../throttle";
 import { Attributes } from "../types";

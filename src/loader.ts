@@ -1,5 +1,7 @@
-import { WrapperOptions } from "./wrapper";
+import { deepCopyUndefined, WrapperOptions } from "./wrapper";
 import { log } from "./log";
+import { deserialize, replacer } from "./serialize";
+import { deepStrictEqual } from "assert";
 
 export interface LoaderOptions {
     trampolineFactoryModule: string;
@@ -18,4 +20,14 @@ export default function webpackLoader(this: any, _source: string) {
 `;
     log.provider(`trampoline {${rv}}`);
     return rv;
+}
+
+export function serialize(arg: any, validate: boolean = false) {
+    const str = JSON.stringify(arg, replacer);
+    if (validate) {
+        const deserialized = deserialize(str);
+        deepCopyUndefined(deserialized, arg);
+        deepStrictEqual(deserialized, arg);
+    }
+    return str;
 }

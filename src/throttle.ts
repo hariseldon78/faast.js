@@ -2,7 +2,8 @@ import * as assert from "assert";
 import { createHash } from "crypto";
 import { PersistentCache } from "./cache";
 import { FaastError, FaastErrorNames } from "./error";
-import { deserialize, serialize } from "./serialize";
+import { serialize } from "./loader";
+import { deserialize } from "./serialize";
 import { sleep } from "./shared";
 
 export class Deferred<T = void> {

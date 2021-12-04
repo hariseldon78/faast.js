@@ -4,15 +4,15 @@ import { v4 as uuidv4 } from "uuid";
 import { AwsImpl, AwsOptions, AwsState } from "./aws/aws-faast";
 import { CostMetric, CostSnapshot } from "./cost";
 import { FaastError, FaastErrorNames, synthesizeFaastError } from "./error";
-import { GoogleImpl, GoogleOptions, GoogleState } from "./google/google-faast";
-import { LocalImpl, LocalOptions, LocalState } from "./local/local-faast";
-import { inspectProvider, log } from "./log";
 import {
     FactoryMap,
-    FunctionCpuUsage,
-    FunctionStatsMap,
-    MemoryLeakDetector
-} from "./metrics";
+    GoogleImpl,
+    GoogleOptions,
+    GoogleState
+} from "./google/google-faast";
+import { LocalImpl, LocalOptions, LocalState } from "./local/local-faast";
+import { inspectProvider, log } from "./log";
+import { FunctionStatsMap, MemoryLeakDetector } from "./metrics";
 import {
     CallId,
     CleanupOptionDefaults,
@@ -25,11 +25,13 @@ import {
     ProviderImpl,
     UUID
 } from "./provider";
-import { deserialize, serialize, serializeFunctionArgs } from "./serialize";
+import { deserialize, serializeFunctionArgs } from "./serialize";
 import { ExponentiallyDecayingAverageValue, roundTo100ms, sleep } from "./shared";
 import { AsyncOrderedQueue, Deferred, Funnel, Pump, RateLimiter } from "./throttle";
 import { FunctionCall, isGenerator } from "./wrapper";
 import Module = require("module");
+import { FunctionCpuUsage } from "./packer";
+import { serialize } from "./loader";
 
 /**
  * An array of all available provider.
